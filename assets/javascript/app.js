@@ -23,9 +23,22 @@ $(document).ready(function () {
     let p1Losses = 0;
     let p2Losses = 0;
     let numPlayers = 0;
-    let turn = 1;
+    const initialTurn = 1;
+    let turn = initialTurn;
     let choice = "";
 
+    // connectedRef.on("value", function(snap) {
+
+    //     // If they are connected..
+    //     if (snap.val()) {
+      
+    //       // Add user to the connections list.
+    //       var con = playersRef.push(true);
+      
+    //       // Remove user from the connection list when they disconnect.
+    //       con.onDisconnect().remove();
+    //     }
+    //   });
 
 
 
@@ -93,9 +106,17 @@ $(document).ready(function () {
             p1Losses = snapshot.val().losses;
 
             $('#player-one-username').html(`<h5>${playerOne}</h5>`);
+            $('#player-one-score').html(`Wins: ${p1Wins} Losses: ${p1Losses}`);
+
+            if (snapshot.child('choice').exists()) {
+                console.log('fb choice: ', snapshot.val().choice);
+                p1Choice = snapshot.val().choice
+            }
 
         }
     });
+
+    database.ref('/players/2').onDisconnect().remove();
 
     database.ref('/players/2').on('value', function (snapshot) {
         console.log(snapshot.val());
@@ -104,24 +125,43 @@ $(document).ready(function () {
             p2Wins = snapshot.val().wins;
             p2Losses = snapshot.val().losses;
 
+
             $('#player-two-username').empty();
             $('#player-two-username').html(`<h5>${playerTwo}</h5>`);
+            $('#player-two-score').html(`Wins: ${p2Wins} Losses: ${p2Losses}`);
+
+            if (snapshot.child('choice').exists()) {
+                console.log('fb choice: ', snapshot.val().choice);
+                p2Choice = snapshot.val().choice
+
+                console.log(`${playerOne} chose ${p1Choice} and ${playerTwo} chose ${p2Choice}`);
+
+            }
         }
     });
 
     database.ref('/turns').on('value', function (snapshot) {
 
-        console.log(snapshot.val());
-
-        console.log(`You are: ${youAre}`);
-
-        turn = snapshot.val().turn;
 
         if (snapshot.child("turn").exists()) {
 
+            console.log(snapshot.val());
+
+            turn = snapshot.val().turn;
+
+            console.log('Turn updated:', turn);
+
+            console.log(`You are: ${youAre}`);
+
+            turn = snapshot.val().turn;
+
             $('.rps-choice').empty();
 
-            if (turn % 2 === 0) {
+            if (turn === 3) {
+                rpsLogic(p1Choice, p2Choice);
+            }
+
+            else if (turn === 2) {
 
                 if (youAre === 'playerTwo') {
                     console.log('Player Two its your turn!');
@@ -141,7 +181,7 @@ $(document).ready(function () {
 
             }
 
-            if (turn % 2 !== 0) {
+            else if (turn === 1) {
 
                 if (youAre === 'playerOne') {
                     console.log('Player One its your turn!');
@@ -167,13 +207,17 @@ $(document).ready(function () {
 
     $(document.body).on('click', '.rps-selection', function () {
 
+        turn++;
 
         if (youAre === 'playerOne') {
             p1Choice = $(this).attr('data-value');
             console.log(p1Choice);
-
             database.ref('/players/1').update({
                 choice: p1Choice
+            });
+
+            database.ref('/turns').set({
+                turn: turn
             });
         }
 
@@ -183,13 +227,91 @@ $(document).ready(function () {
             database.ref('/players/2').update({
                 choice: p2Choice
             });
+
+            database.ref('/turns').set({
+                turn: turn
+            });
         }
 
     });
 
+    function rpsLogic(p1Choice, p2Choice) {
+
+        
+
+            if ((p1Choice === 'rock') && (p2Choice === 'scissors')) {
+                p1Wins++;
+                p2Losses++;
+
+                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+                newGame();
+
+            } else if ((p1Choice === 'rock') && (p2Choice === 'paper')) {
+                p2Wins++;
+                p1Losses++;
+
+                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+                newGame();
+
+            } else if ((p1Choice === 'scissors') && (p2Choice === 'rock')) {
+                p2Wins++;
+                p1Losses++;
+                newGame();
+
+                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+
+            } else if ((p1Choice === 'scissors') && (p2Choice === 'paper')) {
+                p1Wins++;
+                p2Losses++;
+
+                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+                newGame();
+
+            } else if ((p1Choice === 'paper') && (p2Choice === 'rock')) {
+                p1Wins++;
+                p2Losses++;
+
+                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+                newGame();
+
+
+            } else if ((p1Choice === 'paper') && (p2Choice === 'scissors')) {
+                p2Wins++;
+                p1Losses++;
+
+                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+                newGame();
+
+            } else if (p1Choice === p2Choice) {
+                console.log('tie');
+                newGame();
+            }
+
+            database.ref('players/1').update({
+                wins: p1Wins,
+                losses: p1Losses
+            })
+
+            database.ref('players/2').update({
+                wins: p2Wins,
+                losses: p2Losses
+            })
+
+            
+
+        }
+
+    
+        function newGame() {
+            console.log('new game');
+            database.ref('/turns').set({
+                turn: initialTurn
+            });
+
+        }
 
 
 
 
 
-});
+    });
