@@ -38,12 +38,14 @@
         <div class="row">
             <div class="col-xs-12 col-md-4">
                 <div id="player-name">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="username-input" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit" id="username-button">Submit</button>
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="username-input" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit" id="username-button">Submit</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -55,23 +57,70 @@
         <div class="row">
             <div class="col-xs-12 col-md-4">
                 <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
+                    <div class="card-body" id="player-one-card">
+                        <div class="row">
+                            <div class="col">
+                                <div id="player-one-username"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice" id="player-one-rock"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice" id="player-one-paper"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice" id="player-one-scissors"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div id="player-one-score"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-md-4">
                 <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
+                    <div class="card-body" id="result-card">
                     </div>
                 </div>
 
             </div>
             <div class="col-xs-12 col-md-4">
                 <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
+                    <div class="card-body" id="player-two-card">
+                            <div class="row">
+                                    <div class="col">
+                                        <div id="player-two-username"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="rps-choice" id="player-two-rock"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="rps-choice" id="player-two-paper"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="rps-choice" id="player-two-scissors"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="player-two-score"></div>
+                                    </div>
+                                </div>
                     </div>
                 </div>
             </div>
