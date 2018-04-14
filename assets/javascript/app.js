@@ -13,6 +13,7 @@ $(document).ready(function () {
     const database = firebase.database();
 
     const playersRef = database.ref("/players");
+    const connectionsRef = database.ref("/connections");
     const connectedRef = database.ref(".info/connected");
 
     let playerOne = "";
@@ -26,19 +27,37 @@ $(document).ready(function () {
     const initialTurn = 1;
     let turn = initialTurn;
     let choice = "";
+    let opponent = "";
 
-    // connectedRef.on("value", function(snap) {
 
-    //     // If they are connected..
-    //     if (snap.val()) {
-      
-    //       // Add user to the connections list.
-    //       var con = playersRef.push(true);
-      
-    //       // Remove user from the connection list when they disconnect.
-    //       con.onDisconnect().remove();
-    //     }
-    //   });
+    playersRef.on('value',(snap) =>{
+
+    if (snap.numChildren() === 1) {
+
+        if (snap.child('p1').exists()) {
+
+            $('.rps-choice').empty();
+            $('#result-card').empty();
+            $('.player-two-empty').empty();
+            // $('#player-two-score').empty();
+            $('#player-two-username').text(`Waiting for Player 2`);
+        }
+
+        else {
+            $('.rps-choice').empty();
+            $('#result-card').empty();
+            $('.player-one-empty').empty();
+            // $('#player-one-score').empty();
+            $('#player-one-username').text(`Waiting for Player 1`);
+        }
+
+
+    }
+
+    console.log('SOMETHING HAPPENED');
+        
+    });
+
 
 
 
@@ -46,6 +65,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         let player = $('#username-input').val().trim();
+
 
         playersRef.once('value').then(function (snapshot) {
             numPlayers = snapshot.numChildren();
@@ -56,28 +76,30 @@ $(document).ready(function () {
 
                 $('#player-name').text(`Hi ${player}! You are Player 1`);
 
-                $('#player-two-username').append(`<span>Waiting for Player 2</span>`);
+                // $('#player-two-username').append(`<span>Waiting for Player 2</span>`);
 
+                youAre = "playerOne"
 
-
-                database.ref('/players/1').set({
+                database.ref('/players/p1').set({
                     username: player,
                     wins: p1Wins,
                     losses: p1Losses
                 });
 
-                youAre = "playerOne"
+                
 
                 console.log(`You are: ${youAre}`);
             }
 
-            if (numPlayers === 1) {
+            if (numPlayers === 1 && snapshot.child('p1').exists()) {
 
                 $('#player-name').text(`Hi ${player}! You are Player 2`);
 
                 $('#player-turn').text(`Waiting for ${playerOne} to choose`);
 
-                database.ref('/players/2').set({
+                youAre = "playerTwo"
+
+                database.ref('/players/p2').set({
                     username: player,
                     wins: p2Wins,
                     losses: p2Losses
@@ -87,19 +109,42 @@ $(document).ready(function () {
                     turn: turn
                 });
 
-                youAre = "playerTwo"
+                
 
                 console.log(`You are: ${youAre}`);
             }
 
+            if (numPlayers === 1 && snapshot.child('p2').exists()) {
+
+                $('#player-name').text(`Hi ${player}! You are Player 1`);
+
+                youAre = "playerOne"
+
+
+                database.ref('/players/p1').set({
+                    username: player,
+                    wins: p1Wins,
+                    losses: p1Losses
+                });
+
+                database.ref('/turns').set({
+                    turn: turn
+                });
+
+                
+
+                console.log(`You are: ${youAre}`);
+            }
+
+            connectionTracker(youAre);
 
 
         });
     });
 
 
-    database.ref('/players/1').on('value', function (snapshot) {
-        console.log(snapshot.val());
+    database.ref('/players/p1').on('value', function (snapshot) {
+        console.log('Player One Snap', snapshot.val());
         if (snapshot.val()) {
             playerOne = snapshot.val().username;
             p1Wins = snapshot.val().wins;
@@ -116,10 +161,9 @@ $(document).ready(function () {
         }
     });
 
-    database.ref('/players/2').onDisconnect().remove();
 
-    database.ref('/players/2').on('value', function (snapshot) {
-        console.log(snapshot.val());
+    database.ref('/players/p2').on('value', function (snapshot) {
+        console.log('Player Two Snap', snapshot.val());
         if (snapshot.val()) {
             playerTwo = snapshot.val().username;
             p2Wins = snapshot.val().wins;
@@ -141,7 +185,7 @@ $(document).ready(function () {
     });
 
     database.ref('/turns').on('value', function (snapshot) {
-
+        console.log('NEW TURN');
 
         if (snapshot.child("turn").exists()) {
 
@@ -212,7 +256,7 @@ $(document).ready(function () {
         if (youAre === 'playerOne') {
             p1Choice = $(this).attr('data-value');
             console.log(p1Choice);
-            database.ref('/players/1').update({
+            database.ref('/players/p1').update({
                 choice: p1Choice
             });
 
@@ -224,7 +268,7 @@ $(document).ready(function () {
         if (youAre === 'playerTwo') {
             p2Choice = $(this).attr('data-value');
             console.log(p2Choice);
-            database.ref('/players/2').update({
+            database.ref('/players/p2').update({
                 choice: p2Choice
             });
 
@@ -237,81 +281,129 @@ $(document).ready(function () {
 
     function rpsLogic(p1Choice, p2Choice) {
 
-        
-
-            if ((p1Choice === 'rock') && (p2Choice === 'scissors')) {
-                p1Wins++;
-                p2Losses++;
-
-                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-                newGame();
-
-            } else if ((p1Choice === 'rock') && (p2Choice === 'paper')) {
-                p2Wins++;
-                p1Losses++;
-
-                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
-                newGame();
-
-            } else if ((p1Choice === 'scissors') && (p2Choice === 'rock')) {
-                p2Wins++;
-                p1Losses++;
-                newGame();
-
-                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
-
-            } else if ((p1Choice === 'scissors') && (p2Choice === 'paper')) {
-                p1Wins++;
-                p2Losses++;
-
-                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-                newGame();
-
-            } else if ((p1Choice === 'paper') && (p2Choice === 'rock')) {
-                p1Wins++;
-                p2Losses++;
-
-                $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-                newGame();
 
 
-            } else if ((p1Choice === 'paper') && (p2Choice === 'scissors')) {
-                p2Wins++;
-                p1Losses++;
+        if ((p1Choice === 'rock') && (p2Choice === 'scissors')) {
+            p1Wins++;
+            p2Losses++;
 
-                $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
-                newGame();
+            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+            newGame();
 
-            } else if (p1Choice === p2Choice) {
-                console.log('tie');
-                newGame();
-            }
+        } else if ((p1Choice === 'rock') && (p2Choice === 'paper')) {
+            p2Wins++;
+            p1Losses++;
 
-            database.ref('players/1').update({
-                wins: p1Wins,
-                losses: p1Losses
-            })
+            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+            newGame();
 
-            database.ref('players/2').update({
-                wins: p2Wins,
-                losses: p2Losses
-            })
+        } else if ((p1Choice === 'scissors') && (p2Choice === 'rock')) {
+            p2Wins++;
+            p1Losses++;
+            newGame();
 
-            
+            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
 
+        } else if ((p1Choice === 'scissors') && (p2Choice === 'paper')) {
+            p1Wins++;
+            p2Losses++;
+
+            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+            newGame();
+
+        } else if ((p1Choice === 'paper') && (p2Choice === 'rock')) {
+            p1Wins++;
+            p2Losses++;
+
+            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
+            newGame();
+
+
+        } else if ((p1Choice === 'paper') && (p2Choice === 'scissors')) {
+            p2Wins++;
+            p1Losses++;
+
+            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+            newGame();
+
+        } else if (p1Choice === p2Choice) {
+            console.log('tie');
+            newGame();
         }
 
-    
-        function newGame() {
-            console.log('new game');
-            database.ref('/turns').set({
-                turn: initialTurn
-            });
+        database.ref('players/p1').update({
+            wins: p1Wins,
+            losses: p1Losses
+        })
 
-        }
-
-
-
+        database.ref('players/p2').update({
+            wins: p2Wins,
+            losses: p2Losses
+        })
 
 
+
+    }
+
+
+    playersRef.on('child_removed', function (snapshot) {
+        console.log(snapshot.val());
+
+        console.log(`${snapshot.val().username} left the game :(`);
+
+        database.ref('/turns').remove();
     });
+
+
+    function newGame() {
+        console.log('new game');
+        database.ref('/turns').set({
+            turn: initialTurn
+        });
+
+    }
+
+
+    function connectionTracker(p) {
+
+        let path = "";
+
+        switch (p) {
+            case 'playerOne':
+                path = '/players/p1'
+                break;
+            case 'playerTwo':
+                path = '/players/p2'
+                break;
+
+            default:
+                break;
+        }
+
+        connectedRef.on("value", function (snap) {
+
+            // If they are connected..
+            if (snap.val()) {
+
+                    // Add user to the connections list.
+                    var con = connectionsRef.push(true);
+
+                    // Remove user from the connection list when they disconnect.
+
+                    con.onDisconnect().remove();
+                    database.ref(path).onDisconnect().remove(()=>{
+                        console.log()
+
+                    });
+
+
+            }
+        });
+
+
+    }
+
+
+
+
+});
