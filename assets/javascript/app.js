@@ -13,6 +13,7 @@ $(document).ready(function () {
     const database = firebase.database();
 
     const playersRef = database.ref("/players");
+    const guestRef = database.ref('/guests');
     const connectionsRef = database.ref("/connections");
     const connectedRef = database.ref(".info/connected");
 
@@ -27,35 +28,35 @@ $(document).ready(function () {
     const initialTurn = 1;
     let turn = initialTurn;
     let choice = "";
-    let opponent = "";
+    let guestCount = 0;
 
 
-    playersRef.on('value',(snap) =>{
+    playersRef.on('value', (snap) => {
 
-    if (snap.numChildren() === 1) {
+        if (snap.numChildren() === 1) {
 
-        if (snap.child('p1').exists()) {
+            if (snap.child('p1').exists()) {
 
-            $('.rps-choice').empty();
-            $('#result-card').empty();
-            $('.player-two-empty').empty();
-            // $('#player-two-score').empty();
-            $('#player-two-username').text(`Waiting for Player 2`);
+                $('.rps-choice').empty();
+                $('#result-card').empty();
+                $('.player-two-empty').empty();
+                // $('#player-two-score').empty();
+                $('#player-two-username').text(`Waiting for Player 2`);
+            }
+
+            else {
+                $('.rps-choice').empty();
+                $('#result-card').empty();
+                $('.player-one-empty').empty();
+                // $('#player-one-score').empty();
+                $('#player-one-username').text(`Waiting for Player 1`);
+            }
+
+
         }
 
-        else {
-            $('.rps-choice').empty();
-            $('#result-card').empty();
-            $('.player-one-empty').empty();
-            // $('#player-one-score').empty();
-            $('#player-one-username').text(`Waiting for Player 1`);
-        }
+        console.log('SOMETHING HAPPENED');
 
-
-    }
-
-    console.log('SOMETHING HAPPENED');
-        
     });
 
 
@@ -86,7 +87,7 @@ $(document).ready(function () {
                     losses: p1Losses
                 });
 
-                
+
 
                 console.log(`You are: ${youAre}`);
             }
@@ -109,7 +110,7 @@ $(document).ready(function () {
                     turn: turn
                 });
 
-                
+
 
                 console.log(`You are: ${youAre}`);
             }
@@ -131,9 +132,30 @@ $(document).ready(function () {
                     turn: turn
                 });
 
-                
+
 
                 console.log(`You are: ${youAre}`);
+            }
+
+            if (numPlayers === 2) {
+                guestCount++;
+                console.log(guestCount);
+
+                $('#player-name').text(`Hi ${player}! the game is full, but you can watch and chat!`);
+
+                youAre = `guest${guestCount}`;
+                console.log('TEST You are:', youAre)
+
+
+                database.ref(`/guests/${youAre}`).set({
+                    username: player
+                });
+
+                database.ref(`/guests/count`).set({
+                    count: guestCount
+                });
+
+
             }
 
             connectionTracker(youAre);
@@ -141,7 +163,6 @@ $(document).ready(function () {
 
         });
     });
-
 
     database.ref('/players/p1').on('value', function (snapshot) {
         console.log('Player One Snap', snapshot.val());
@@ -279,6 +300,35 @@ $(document).ready(function () {
 
     });
 
+    playersRef.on('child_removed', function (snapshot) {
+        console.log(snapshot.val());
+
+        console.log(`${snapshot.val().username} left the game :(`);
+
+        database.ref('/turns').remove();
+    });
+
+
+    database.ref('/guests/count').on('value', (snap) => {
+        if (snap.val()) {
+            guestCount = parseInt(snap.val().count);
+        }
+    });
+
+    guestRef.on('child_removed', function (snapshot) {
+
+        console.log(`${snapshot.val().username} left the game :(`);
+
+    });
+
+    guestRef.on('value', snap => {
+        if (snap.numChildren() < 2) {
+            database.ref('/guests/count').set({
+                count: 0
+            });
+        }
+    });
+
     function rpsLogic(p1Choice, p2Choice) {
 
 
@@ -346,15 +396,6 @@ $(document).ready(function () {
     }
 
 
-    playersRef.on('child_removed', function (snapshot) {
-        console.log(snapshot.val());
-
-        console.log(`${snapshot.val().username} left the game :(`);
-
-        database.ref('/turns').remove();
-    });
-
-
     function newGame() {
         console.log('new game');
         database.ref('/turns').set({
@@ -365,36 +406,42 @@ $(document).ready(function () {
 
 
     function connectionTracker(p) {
-
-        let path = "";
+        console.log(`guest count in tracker ${guestCount}`);
+        let fbPath = "";
 
         switch (p) {
             case 'playerOne':
-                path = '/players/p1'
+                fbPath = '/players/p1';
                 break;
             case 'playerTwo':
-                path = '/players/p2'
+                fbPath = '/players/p2';
+                break;
+            case `guest${guestCount}`:
+                fbPath = `/guests/guest${guestCount}`;
                 break;
 
             default:
                 break;
         }
 
+        console.log('Path 1', fbPath);
+
         connectedRef.on("value", function (snap) {
 
             // If they are connected..
             if (snap.val()) {
 
-                    // Add user to the connections list.
-                    var con = connectionsRef.push(true);
+                console.log('Path 2', fbPath);
+                // Add user to the connections list.
+                var con = connectionsRef.push(true);
 
-                    // Remove user from the connection list when they disconnect.
+                // Remove user from the connection list when they disconnect.
 
-                    con.onDisconnect().remove();
-                    database.ref(path).onDisconnect().remove(()=>{
-                        console.log()
+                con.onDisconnect().remove();
+                database.ref(fbPath).onDisconnect().remove(() => {
+                    console.log(`${p} disconnected`);
 
-                    });
+                });
 
 
             }
