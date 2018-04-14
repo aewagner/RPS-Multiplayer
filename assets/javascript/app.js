@@ -30,7 +30,7 @@ $(document).ready(function () {
     let choice = "";
     let guestCount = 0;
 
-
+//TRACKING NUMBER OF PLAYERS //////////////////////////////////////////////////////////////
     playersRef.on('value', (snap) => {
 
         if (snap.numChildren() === 1) {
@@ -60,7 +60,7 @@ $(document).ready(function () {
     });
 
 
-
+// CLICK EVENT FOR ADDING NEW PLAYERS /////////////////////////////////////////////////////
 
     $('#username-button').on('click', function () {
         event.preventDefault();
@@ -164,6 +164,8 @@ $(document).ready(function () {
         });
     });
 
+// TRACKING PLAYER ONE ////////////////////////////////////////////////////////////////////
+
     database.ref('/players/p1').on('value', function (snapshot) {
         console.log('Player One Snap', snapshot.val());
         if (snapshot.val()) {
@@ -182,6 +184,7 @@ $(document).ready(function () {
         }
     });
 
+// TRACKING PLAYER TWO/////////////////////////////////////////////////////////////////////
 
     database.ref('/players/p2').on('value', function (snapshot) {
         console.log('Player Two Snap', snapshot.val());
@@ -204,6 +207,8 @@ $(document).ready(function () {
             }
         }
     });
+
+// TRACKING NUMBER OF TURNS ///////////////////////////////////////////////////////////////
 
     database.ref('/turns').on('value', function (snapshot) {
         console.log('NEW TURN');
@@ -270,6 +275,8 @@ $(document).ready(function () {
 
     });
 
+    // CLICK EVENT THAT INITIATES GAME LOGIC //////////////////////////////////////////////
+
     $(document.body).on('click', '.rps-selection', function () {
 
         turn++;
@@ -300,6 +307,8 @@ $(document).ready(function () {
 
     });
 
+// TRACKING WHEN A PLAYER DISCONNECTS /////////////////////////////////////////////////////
+
     playersRef.on('child_removed', function (snapshot) {
         console.log(snapshot.val());
 
@@ -308,17 +317,13 @@ $(document).ready(function () {
         database.ref('/turns').remove();
     });
 
+// TRACKING THE GUEST COUNT ///////////////////////////////////////////////////////////////
+
 
     database.ref('/guests/count').on('value', (snap) => {
         if (snap.val()) {
             guestCount = parseInt(snap.val().count);
         }
-    });
-
-    guestRef.on('child_removed', function (snapshot) {
-
-        console.log(`${snapshot.val().username} left the game :(`);
-
     });
 
     guestRef.on('value', snap => {
@@ -329,6 +334,16 @@ $(document).ready(function () {
         }
     });
 
+// TRACKING WHEN A GUEST LEAVES ///////////////////////////////////////////////////////////
+
+    guestRef.on('child_removed', function (snapshot) {
+
+        console.log(`${snapshot.val().username} left the game :(`);
+
+    });
+
+   
+// ROCK PAPER SCISSORS GAME LOGIC /////////////////////////////////////////////////////////
     function rpsLogic(p1Choice, p2Choice) {
 
 
@@ -396,6 +411,8 @@ $(document).ready(function () {
     }
 
 
+// STARTING A NEW GAME ////////////////////////////////////////////////////////////////////
+
     function newGame() {
         console.log('new game');
         database.ref('/turns').set({
@@ -404,6 +421,7 @@ $(document).ready(function () {
 
     }
 
+// TRACKING ALL CONNECTIONS ////////////////////////////////////////////////////////////// 
 
     function connectionTracker(p) {
         console.log(`guest count in tracker ${guestCount}`);

@@ -24,38 +24,39 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container flex-container">
         <div class="row">
             <div class="col">
-                <div class="jumbotron jumbotron-fluid">
+                <div class="jumbotron jumbotron-fluid text-center">
                     <div class="container">
-                        <h1 class="display-4">Fluid jumbotron</h1>
-                        <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                        <h1 class="display-4">Rock Paper Scissors</h1>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row justify-content-center text-center">
             <div class="col-xs-12 col-md-4">
                 <div id="player-name">
-                    <div><h4>Join Now!</h4></div>
+                    <div>
+                        <h4>Join Now!</h4>
+                    </div>
                     <form>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" id="username-input" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit" id="username-button">Submit</button>
+                                <button class="btn btn-outline-secondary" type="submit" id="username-button">Start</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row justify-content-center text-center">
             <div class="col-xs-12 col-md-4">
                 <p id="player-turn"></p>
             </div>
         </div>
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-xs-12 col-md-4">
                 <div class="card">
                     <div class="card-body" id="player-one-card">
@@ -97,53 +98,54 @@
             <div class="col-xs-12 col-md-4">
                 <div class="card">
                     <div class="card-body" id="player-two-card">
-                            <div class="row">
-                                    <div class="col">
-                                        <div class="player-two-empty" id="player-two-username"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="rps-choice player-two-empty" id="player-two-rock"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="rps-choice player-two-empty" id="player-two-paper"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="rps-choice player-two-empty" id="player-two-scissors"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="player-two-empty" id="player-two-score"></div>
-                                    </div>
-                                </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="player-two-empty" id="player-two-username"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice player-two-empty" id="player-two-rock"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice player-two-empty" id="player-two-paper"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="rps-choice player-two-empty" id="player-two-scissors"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="player-two-empty" id="player-two-score"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        This is some text within a card body.
+        <div class="row justify-content-center">
+            <div class="col-xs-12 col-md-10">
+                <div class="card" id="chat-card">
+                    <div class="card-body" id="chat-card-body">
                     </div>
                 </div>
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-8">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Button</button>
+        <div class="row justify-content-center">
+            <div class="col-xs-12 col-md-10">
+                <form>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="chat-button">Send</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
