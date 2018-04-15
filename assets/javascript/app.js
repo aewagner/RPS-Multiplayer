@@ -35,7 +35,7 @@ $(document).ready(function () {
     // let disconnectedUser = "";
 
 
-    // $('#chat-box').hide();
+    $('.card').hide();
 
     //TRACKING EVERYTHING ////////////////////////////////////////////////////////////////
     database.ref('/').on('value', snap => {
@@ -58,26 +58,26 @@ $(document).ready(function () {
             if (snap.child('p1').exists()) {
 
                 $('.rps-choice').empty();
-                $('#result-card').empty();
+                $('#result-card-body').empty();
                 $('.player-two-empty').empty();
                 // $('#player-two-score').empty();
                 $('#player-two-username').text(`Waiting for Player 2`);
 
                 if (myUsername && youAre !== 'playerOne') {
-                    $('#player-two-rock').append(`<button type="button" class="btn btn-success join-game-button">Join Game!</button>`);
+                    $('#player-two-rock').append(`<button type="button" class="btn btn-outline-primary join-game-button text-center" id="jg-button">Join Game!</button>`);
                 }
 
             }
 
             else {
                 $('.rps-choice').empty();
-                $('#result-card').empty();
+                $('#result-card-body').empty();
                 $('.player-one-empty').empty();
                 // $('#player-one-score').empty();
                 $('#player-one-username').text(`Waiting for Player 1`);
 
                 if (myUsername && youAre !== 'playerTwo') {
-                    $('#player-one-rock').append(`<button type="button" class="btn btn-success join-game-button">Join Game!</button>`);
+                    $('#player-one-rock').append(`<button type="button" class="btn btn-outline-primary join-game-button text-center" id="jg-button">Join Game!</button>`);
                 }
             }
 
@@ -87,10 +87,10 @@ $(document).ready(function () {
         else if (snap.numChildren() === 0) {
             console.log('All Gone')
             $('.rps-choice').empty();
-            $('#result-card').empty();
+            $('#result-card-body').empty();
             $('.player-two-empty').empty();
             $('.rps-choice').empty();
-            $('#result-card').empty();
+            $('#result-card-body').empty();
             $('.player-one-empty').empty();
         }
 
@@ -105,6 +105,8 @@ $(document).ready(function () {
         event.preventDefault();
 
         let player = $('#username-input').val().trim();
+
+        $('.card').show();
 
         myUsername = player;
 
@@ -214,7 +216,7 @@ $(document).ready(function () {
         </div>
         <div class="row justify-content-center">
             <div class="col-xs-12 col-md-10">
-                <form>
+                <form id="chat-form">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="basic-addon2" id="chat-message">
                         <div class="input-group-append">
@@ -249,6 +251,8 @@ $(document).ready(function () {
             p1Wins = snapshot.val().wins;
             p1Losses = snapshot.val().losses;
 
+            $('#player-two-card').css('border', '1px solid gray');
+            $('#player-one-card').css('border', '1px solid gray');
             $('#player-one-username').html(`<h5>${playerOne}</h5>`);
             $('#player-one-score').html(`Wins: ${p1Wins} Losses: ${p1Losses}`);
 
@@ -305,12 +309,27 @@ $(document).ready(function () {
 
             if (turn === 3) {
                 if (youAre === 'playerTwo') {
-                    $('#player-two-paper').html(`<h2>${p2Choice}</h2>`);
+                    $('#player-two-paper').html(`<h2>${p2Choice.toUpperCase()}</h2>`);
                 }
+                else if (youAre !== 'playerOne' && youAre !== 'playerTwo') {
+                    $('#player-two-paper').html(`<h2>${p2Choice.toUpperCase()}</h2>`);
+                    $('#player-one-paper').html(`<h2>${p1Choice.toUpperCase()}</h2>`);
+                }
+
+                // rpsGif();
+
+                // setTimeout(() => {
+                //     rpsLogic(p1Choice, p2Choice);
+                // }, 7000); 
+
                 rpsLogic(p1Choice, p2Choice);
+
             }
 
             else if (turn === 2) {
+
+                $('#player-two-card').css('border', '5px solid lightskyblue');
+                $('#player-one-card').css('border', '1px solid gray');
 
                 if (youAre === 'playerTwo') {
                     // console.log('Player Two its your turn!');
@@ -326,15 +345,21 @@ $(document).ready(function () {
 
                 if (youAre === 'playerOne') {
                     $('#player-turn').text(`Waiting for ${playerTwo} to choose`);
-                    $('#player-one-paper').html(`<h2>${p1Choice}</h2>`);
+                    $('#player-one-paper').html(`<h2>${p1Choice.toUpperCase()}</h2>`);
                 }
+
+    
 
             }
 
             else if (turn === 1) {
 
+                $('#player-one-card').css('border', '5px solid lightskyblue');
+                $('#player-two-card').css('border', '1px solid gray');
+
                 if (youAre === 'playerOne') {
                     // console.log('Player One its your turn!');
+                    
 
                     $('#player-turn').text(`It's your turn!`);
 
@@ -400,6 +425,8 @@ $(document).ready(function () {
             sender: myUsername
         })
 
+        $('#chat-message').val('');
+
     });
 
 
@@ -464,7 +491,7 @@ $(document).ready(function () {
 
     // TRACKING WHEN A GUEST LEAVES //////////////////////////////////////////////////////
 
-    guestRef.once('child_removed', function (snapshot) {
+    guestRef.on('child_removed', function (snapshot) {
 
         // console.log(`${snapshot.val().username} left the game :(`);
 
@@ -488,59 +515,56 @@ $(document).ready(function () {
             p1Wins++;
             p2Losses++;
 
-            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerOne} Wins!</h2>`);
 
+            updateWinLoss();
+            newGame();
         } else if ((p1Choice === 'rock') && (p2Choice === 'paper')) {
             p2Wins++;
             p1Losses++;
 
-            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
-            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerTwo} Wins!</h2>`);
 
+            updateWinLoss();
+            newGame();
         } else if ((p1Choice === 'scissors') && (p2Choice === 'rock')) {
             p2Wins++;
             p1Losses++;
-            newGame();
 
-            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
+            updateWinLoss();
+            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerTwo} Wins!</h2>`);
 
         } else if ((p1Choice === 'scissors') && (p2Choice === 'paper')) {
             p1Wins++;
             p2Losses++;
 
-            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerOne} Wins!</h2>`);
 
+            updateWinLoss();
+            newGame();
         } else if ((p1Choice === 'paper') && (p2Choice === 'rock')) {
             p1Wins++;
             p2Losses++;
 
-            $('#result-card').html(`<h2>${playerOne} Wins!</h2>`);
-            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerOne} Wins!</h2>`);
 
+            updateWinLoss();
+            newGame();
 
         } else if ((p1Choice === 'paper') && (p2Choice === 'scissors')) {
             p2Wins++;
             p1Losses++;
 
-            $('#result-card').html(`<h2>${playerTwo} Wins!</h2>`);
-            newGame();
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">${playerTwo} Wins!</h2>`);
 
+            updateWinLoss();
+            newGame();
         } else if (p1Choice === p2Choice) {
-            // console.log('tie');
-            newGame();
-        }
+            $('#result-card-body').html(`<h2 class ="align-items-center" id="result-id">Tie Game...</h2>`);
 
-        database.ref('players/p1').update({
-            wins: p1Wins,
-            losses: p1Losses
-        })
-
-        database.ref('players/p2').update({
-            wins: p2Wins,
-            losses: p2Losses
-        })
+            updateWinLoss();
+        }   newGame();
 
 
 
@@ -555,6 +579,21 @@ $(document).ready(function () {
             turn: initialTurn
         });
 
+    }
+
+    function updateWinLoss() {
+        
+        database.ref('players/p1').update({
+            wins: p1Wins,
+            losses: p1Losses,
+            choice: ""
+        })
+
+        database.ref('players/p2').update({
+            wins: p2Wins,
+            losses: p2Losses,
+            choice: ""
+        })
     }
 
     // TRACKING ALL CONNECTIONS ///////////////////////////////////////////////////////// 
@@ -713,6 +752,34 @@ $(document).ready(function () {
 
 
     }
+
+    // function rpsGif() {
+    //     // Storing our giphy API URL for a random rps image
+    //   var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=rock-paper-scissors";
+
+    //   // Perfoming an AJAX GET request to our queryURL
+    //   $.ajax({
+    //     url: queryURL,
+    //     method: "GET"
+    //   })
+
+    //   // After the data from the AJAX request comes back
+    //   .done(function(response) {
+
+    //     // Saving the image_original_url property
+    //     var imageUrl = response.data.image_original_url;
+
+    //     // Creating and storing an image tag
+    //     var rpsImage = $("<img class='img-fluid' id='rps-gif'>");
+
+    //     // Setting the rpsImage src attribute to imageUrl
+    //     rpsImage.attr("src", imageUrl);
+    //     rpsImage.attr("alt", "rps image");
+
+    //     // Prepending the rpsImage to the images div
+    //     $("#result-card-body").append(rpsImage);
+    //   });
+    // }
 
 
 

@@ -1,9 +1,74 @@
-/* .flex-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-} */
+.jumbotron {
+    background-color: transparent;
+}
 
-/* #chat-box {
-    background-color: rgb(199, 199, 199);
-} */
+.card {
+    min-height: 10rem;
+}
+
+.rps-choice:hover {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+
+
+#rps-logo {
+    max-width: 25rem;
+}
+
+#player-one-card,
+#result-card, 
+#player-two-card {
+    border: transparent;
+}
+
+#result-card,
+#result-card-body {
+    text-align: center;
+}
+
+#result-id {
+    margin-top: 3rem;
+}
+
+.chat-message {
+    margin-bottom: 0.5rem;
+}
+
+#chat-card {
+    margin-top: 3rem;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+#chat-card-body {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+
+#chat-form {
+    margin-bottom: 3rem;
+}
+
+#chat-message {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+
+#chat-button {
+    border-top-right-radius: 0px;
+}
+
+#player-name, 
+#player-turn {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+#jg-button {
+    margin-top: 1.5rem;
+    margin-left: 1.55rem;
+}
+

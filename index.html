@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Rock Paper Scissors</title>
+    <link rel="shortcut icon" href="./assets/images/rock-paper-scissors-icon.png">
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -29,6 +30,7 @@
             <div class="col">
                 <div class="jumbotron jumbotron-fluid text-center">
                     <div class="container">
+                        <img src="assets/images/rock-paper-scissors.png" class="img-fluid" alt="rock paper scissors" id="rps-logo">
                         <h1 class="display-4">Rock Paper Scissors</h1>
                     </div>
                 </div>
@@ -56,16 +58,16 @@
                 <p id="player-turn"></p>
             </div>
         </div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center text-center">
             <div class="col-xs-12 col-md-4">
-                <div class="card">
-                    <div class="card-body" id="player-one-card">
+                <div class="card" id="player-one-card">
+                    <div class="card-body" id="player-one-card-body">
                         <div class="row">
                             <div class="col">
-                                <div class="player-one-empty" id="player-one-username"></div>
+                                <div class="player-one-empty text-center" id="player-one-username"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row justify-content-center">
                             <div class="col">
                                 <div class="rps-choice player-one-empty" id="player-one-rock"></div>
                             </div>
@@ -82,28 +84,28 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div class="player-one-empty" id="player-one-score"></div>
+                                <div class="player-one-empty text-center" id="player-one-score"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-4">
-                <div class="card">
-                    <div class="card-body" id="result-card">
+            <div class="col-xs-12 col-md-4 text-center align-items-center">
+                <div class="card" id="result-card">
+                    <div class="card-body align-items-center" id="result-card-body">
                     </div>
                 </div>
 
             </div>
             <div class="col-xs-12 col-md-4">
-                <div class="card">
-                    <div class="card-body" id="player-two-card">
+                <div class="card" id="player-two-card">
+                    <div class="card-body" id="player-two-card-body">
                         <div class="row">
                             <div class="col">
-                                <div class="player-two-empty" id="player-two-username"></div>
+                                <div class="player-two-empty text-center" id="player-two-username"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row justify-content-center">
                             <div class="col">
                                 <div class="rps-choice player-two-empty" id="player-two-rock"></div>
                             </div>
@@ -120,7 +122,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div class="player-two-empty" id="player-two-score"></div>
+                                <div class="player-two-empty text-center" id="player-two-score"></div>
                             </div>
                         </div>
                     </div>
