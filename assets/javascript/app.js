@@ -206,7 +206,7 @@ $(document).ready(function () {
 
 
             $('#chat-box').html(`<div class="row justify-content-center">
-            <div class="col-xs-12 col-md-10">
+            <div class="col-xs-10 col-sm-10 col-md-8">
                 <div class="card" id="chat-card">
                     <div class="card-body" id="chat-card-body">
                     </div>
@@ -215,7 +215,7 @@ $(document).ready(function () {
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-xs-12 col-md-10">
+            <div class="col-xs-10 col-sm-10 col-md-8">
                 <form id="chat-form">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="basic-addon2" id="chat-message">
