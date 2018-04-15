@@ -44,6 +44,9 @@
     margin-top: 3rem;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+    height: 20rem;
+    max-height: 20rem;
+    overflow-y: scroll;
 }
 
 #chat-card-body {
