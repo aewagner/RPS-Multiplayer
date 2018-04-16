@@ -15,7 +15,6 @@ Also check out the live version of the game here [aewagner.github.io/RPS-Multipl
 + HTML
 + CSS
 + Bootsrap 4
-+ Flexbox
 + Javascript
 + jQuery
 + Firebase
