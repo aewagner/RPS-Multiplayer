@@ -9,7 +9,7 @@ Also available is a chat box where players and guests can send messages to eacho
 ## Getting Started
 Go to [github.com/aewagner/RPS-Multiplayer](https://github.com/aewagner/RPS-Multiplayer) to access my repository. 
 
-Also check out the live version of the game here [aewagner.github.io/RPS-Multiplayer/](https://aewagner.github.io/RPS-Multiplayer/).
+Also check out the live version of the game here [aewagner.github.io/RPS-Multiplayer](https://aewagner.github.io/RPS-Multiplayer).
 
 ## Built With
 + HTML
